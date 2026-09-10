@@ -1,0 +1,28 @@
+version: 2
+sources:
+  - name: jobtech
+    schema: raw
+    description: Immutable payload versions from JobSearch, loaded by Python. Fixture and live databases are separate.
+    tables:
+      - name: job_ads
+        description: One row per observed payload change per advertisement, with a monotonic ingestion sequence. Reversions are retained.
+        columns:
+          - name: job_id
+            data_tests: [not_null]
+          - name: ingestion_id
+            data_tests: [not_null, unique]
+          - name: source_kind
+            data_tests:
+              - accepted_values:
+                  arguments:
+                    values: [fixture, live, historical]
+      - name: collection_coverage
+        description: Per-month archive completion ledger. Only fully parsed archives produce complete months.
+        columns:
+          - name: publication_month
+            data_tests: [not_null, unique]
+          - name: status
+            data_tests:
+              - accepted_values:
+                  arguments:
+                    values: [loading, complete]

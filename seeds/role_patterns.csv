@@ -1,0 +1,4 @@
+priority,role_family,title_pattern,taxonomy_pattern
+1,Analytics Engineer,\banalytics[ -]+engineer(s|ing)?\b,\banalytics[ -]+engineer(s|ing)?\b
+2,Data Scientist,\b(data[ -]+scientists?|datavetare)\b,\bdata[ -]+scientists?\b
+3,Data Engineer,\b(data[ -]+engineers?|dataingenj[oö]r(er)?)\b,\bdata[ -]+engineers?\b

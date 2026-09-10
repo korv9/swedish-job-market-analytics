@@ -1,0 +1,99 @@
+version: 2
+models:
+  - name: stg_job_ads
+    description: Latest observed payload per source job ID. Strings are trimmed and dates safely cast; timestamps retain source wall time.
+    columns:
+      - name: job_id
+        description: Canonical ad ID; historical-original plus original_id when available, otherwise source record ID. The archive record ID is retained separately.
+        data_tests: [not_null, unique]
+      - name: published_at
+        description: Source publication timestamp. A failed cast fails the not-null test for review.
+        data_tests: [not_null]
+      - name: title
+        data_tests: [not_null]
+      - name: required_skills
+        description: Source must-have skill objects, retained as JSON; keyword mentions are derived separately.
+  - name: int_job_ads_enriched
+    description: Classifies roles using versioned title/taxonomy seeds, management exclusions and ambiguity flags. Seniority is inferred from the title.
+  - name: dim_employers
+    description: Type 1 employer dimension. Name fallbacks may merge unrelated employers; organization numbers are preferred.
+    columns:
+      - name: employer_id
+        data_tests: [not_null, unique]
+  - name: dim_locations
+    description: Location dimension keyed by the complete source location tuple, including country to distinguish non-Swedish locations.
+    columns:
+      - name: location_id
+        data_tests: [not_null, unique]
+  - name: dim_occupations
+    description: Type 1 occupation dimension retaining source taxonomy identifiers.
+    columns:
+      - name: occupation_id
+        data_tests: [not_null, unique]
+  - name: fct_job_ads
+    description: One current row per observed job advertisement, incrementally replaced on newly ingested payload changes. Not a vacancy count or active-ad snapshot.
+    columns:
+      - name: job_id
+        data_tests: [not_null, unique]
+      - name: employer_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_employers')
+                field: employer_id
+      - name: location_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_locations')
+                field: location_id
+      - name: occupation_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_occupations')
+                field: occupation_id
+      - name: ingestion_id
+        description: Monotonic ingestion watermark, independent of publication date. Gaps are harmless.
+        data_tests: [not_null]
+      - name: role_family
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [Data Engineer, Analytics Engineer, Data Scientist, Other]
+      - name: seniority
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [junior, senior, unspecified]
+  - name: bridge_job_skills
+    description: One row per job and detected technology mention using seed regex patterns. Includes title, description and structured skills; does not establish requirements or proficiency.
+    columns:
+      - name: job_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('fct_job_ads')
+                field: job_id
+      - name: skill
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('technology_patterns')
+                field: skill
+  - name: job_market_summary
+    description: Observed ad count by publication month, role, region and inferred seniority. Cohorts of collected ads, not historical market totals.
+    columns:
+      - name: job_count
+        data_tests: [not_null]
+seeds:
+  - name: technology_patterns
+    description: Reviewable lower-case regex patterns. Fabric requires Microsoft or MS context to reduce false positives.
+    columns:
+      - name: skill
+        data_tests: [not_null, unique]

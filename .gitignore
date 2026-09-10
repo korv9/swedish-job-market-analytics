@@ -1,0 +1,16 @@
+.venv/
+target/
+logs/
+dbt_packages/
+*.duckdb*
+data/
+__pycache__/
+.pytest_cache/
+.env*
+!.env.example
+credentials*
+secrets*
+profiles.local.yml
+**/.pbi/
+*.pbix
+reports/generated/

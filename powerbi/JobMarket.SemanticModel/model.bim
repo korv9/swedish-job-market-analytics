@@ -1,0 +1,460 @@
+{
+  "name": "JobMarket",
+  "compatibilityLevel": 1567,
+  "model": {
+    "culture": "en-US",
+    "defaultPowerBIDataSourceVersion": "powerBI_V3",
+    "dataAccessOptions": {
+      "legacyRedirects": true,
+      "returnErrorValuesAsNull": true
+    },
+    "expressions": [
+      {
+        "name": "DataFolder",
+        "kind": "m",
+        "expression": "\"C:/Users/46762/VSCODE/arbetsformedling/data/powerbi\" meta [IsParameterQuery=true, Type=\"Text\", IsParameterQueryRequired=true]"
+      }
+    ],
+    "tables": [
+      {
+        "name": "Jobs",
+        "columns": [
+          {
+            "name": "publication_month",
+            "dataType": "dateTime",
+            "sourceColumn": "publication_month",
+            "summarizeBy": "none",
+            "formatString": "yyyy-MM"
+          },
+          {
+            "name": "role_family",
+            "dataType": "string",
+            "sourceColumn": "role_family",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "is_complete",
+            "dataType": "boolean",
+            "sourceColumn": "is_complete",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "observed_ads",
+            "dataType": "int64",
+            "sourceColumn": "observed_ads",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "total_ads",
+            "dataType": "int64",
+            "sourceColumn": "total_ads",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "unique_employers",
+            "dataType": "int64",
+            "sourceColumn": "unique_employers",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "previous_month_ads",
+            "dataType": "int64",
+            "sourceColumn": "previous_month_ads",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "previous_year_ads",
+            "dataType": "int64",
+            "sourceColumn": "previous_year_ads",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "ads_3m_average",
+            "dataType": "double",
+            "sourceColumn": "ads_3m_average",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "ads_mom_change",
+            "dataType": "int64",
+            "sourceColumn": "ads_mom_change",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "ads_mom_pct",
+            "dataType": "double",
+            "sourceColumn": "ads_mom_pct",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "ads_yoy_change",
+            "dataType": "int64",
+            "sourceColumn": "ads_yoy_change",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "ads_yoy_pct",
+            "dataType": "double",
+            "sourceColumn": "ads_yoy_pct",
+            "summarizeBy": "none"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Jobs",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = Csv.Document(File.Contents(DataFolder & \"/Jobs.csv\"), [Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),",
+                "    Headers = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),",
+                "    Nulls = Table.ReplaceValue(Headers, \"\", null, Replacer.ReplaceValue, Table.ColumnNames(Headers)),",
+                "    Typed = Table.TransformColumnTypes(Nulls, {{\"publication_month\", type date}, {\"role_family\", type text}, {\"is_complete\", type logical}, {\"observed_ads\", Int64.Type}, {\"total_ads\", Int64.Type}, {\"unique_employers\", Int64.Type}, {\"previous_month_ads\", Int64.Type}, {\"previous_year_ads\", Int64.Type}, {\"ads_3m_average\", type number}, {\"ads_mom_change\", Int64.Type}, {\"ads_mom_pct\", type number}, {\"ads_yoy_change\", Int64.Type}, {\"ads_yoy_pct\", type number}}, \"en-US\")",
+                "in",
+                "    Typed"
+              ]
+            }
+          }
+        ],
+        "measures": [
+          {
+            "name": "Ads",
+            "expression": "SUM(Jobs[total_ads])",
+            "formatString": "#,0"
+          }
+        ]
+      },
+      {
+        "name": "Skills",
+        "columns": [
+          {
+            "name": "publication_month",
+            "dataType": "dateTime",
+            "sourceColumn": "publication_month",
+            "summarizeBy": "none",
+            "formatString": "yyyy-MM"
+          },
+          {
+            "name": "role_family",
+            "dataType": "string",
+            "sourceColumn": "role_family",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "skill",
+            "dataType": "string",
+            "sourceColumn": "skill",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "is_complete",
+            "dataType": "boolean",
+            "sourceColumn": "is_complete",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "total_ads",
+            "dataType": "int64",
+            "sourceColumn": "total_ads",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "ads_with_skill",
+            "dataType": "int64",
+            "sourceColumn": "ads_with_skill",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "unique_employers",
+            "dataType": "int64",
+            "sourceColumn": "unique_employers",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "skill_share",
+            "dataType": "double",
+            "sourceColumn": "skill_share",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "previous_month_skill_ads",
+            "dataType": "int64",
+            "sourceColumn": "previous_month_skill_ads",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "previous_year_skill_ads",
+            "dataType": "int64",
+            "sourceColumn": "previous_year_skill_ads",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "previous_month_share",
+            "dataType": "double",
+            "sourceColumn": "previous_month_share",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "previous_year_share",
+            "dataType": "double",
+            "sourceColumn": "previous_year_share",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "skill_share_3m",
+            "dataType": "double",
+            "sourceColumn": "skill_share_3m",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "sufficient_volume",
+            "dataType": "boolean",
+            "sourceColumn": "sufficient_volume",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "skill_ads_mom_pct",
+            "dataType": "double",
+            "sourceColumn": "skill_ads_mom_pct",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "skill_ads_yoy_pct",
+            "dataType": "double",
+            "sourceColumn": "skill_ads_yoy_pct",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "share_mom_pp",
+            "dataType": "double",
+            "sourceColumn": "share_mom_pp",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "share_yoy_pp",
+            "dataType": "double",
+            "sourceColumn": "share_yoy_pp",
+            "summarizeBy": "none"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Skills",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = Csv.Document(File.Contents(DataFolder & \"/Skills.csv\"), [Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),",
+                "    Headers = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),",
+                "    Nulls = Table.ReplaceValue(Headers, \"\", null, Replacer.ReplaceValue, Table.ColumnNames(Headers)),",
+                "    Typed = Table.TransformColumnTypes(Nulls, {{\"publication_month\", type date}, {\"role_family\", type text}, {\"skill\", type text}, {\"is_complete\", type logical}, {\"total_ads\", Int64.Type}, {\"ads_with_skill\", Int64.Type}, {\"unique_employers\", Int64.Type}, {\"skill_share\", type number}, {\"previous_month_skill_ads\", Int64.Type}, {\"previous_year_skill_ads\", Int64.Type}, {\"previous_month_share\", type number}, {\"previous_year_share\", type number}, {\"skill_share_3m\", type number}, {\"sufficient_volume\", type logical}, {\"skill_ads_mom_pct\", type number}, {\"skill_ads_yoy_pct\", type number}, {\"share_mom_pp\", type number}, {\"share_yoy_pp\", type number}}, \"en-US\")",
+                "in",
+                "    Typed"
+              ]
+            }
+          }
+        ],
+        "measures": [
+          {
+            "name": "Technology share",
+            "expression": "IF(HASONEVALUE(Skills[skill]), DIVIDE(SUM(Skills[ads_with_skill]), SUM(Skills[total_ads])))",
+            "formatString": "0.0%"
+          }
+        ]
+      },
+      {
+        "name": "Comparison",
+        "columns": [
+          {
+            "name": "role_family",
+            "dataType": "string",
+            "sourceColumn": "role_family",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "skill",
+            "dataType": "string",
+            "sourceColumn": "skill",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "baseline_year",
+            "dataType": "int64",
+            "sourceColumn": "baseline_year",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "comparison_year",
+            "dataType": "int64",
+            "sourceColumn": "comparison_year",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "is_complete",
+            "dataType": "boolean",
+            "sourceColumn": "is_complete",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "baseline_skill_ads",
+            "dataType": "int64",
+            "sourceColumn": "baseline_skill_ads",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "baseline_total_ads",
+            "dataType": "int64",
+            "sourceColumn": "baseline_total_ads",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "comparison_skill_ads",
+            "dataType": "int64",
+            "sourceColumn": "comparison_skill_ads",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "comparison_total_ads",
+            "dataType": "int64",
+            "sourceColumn": "comparison_total_ads",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "share_change_pp",
+            "dataType": "double",
+            "sourceColumn": "share_change_pp",
+            "summarizeBy": "none"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Comparison",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = Csv.Document(File.Contents(DataFolder & \"/Comparison.csv\"), [Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),",
+                "    Headers = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),",
+                "    Nulls = Table.ReplaceValue(Headers, \"\", null, Replacer.ReplaceValue, Table.ColumnNames(Headers)),",
+                "    Typed = Table.TransformColumnTypes(Nulls, {{\"role_family\", type text}, {\"skill\", type text}, {\"baseline_year\", Int64.Type}, {\"comparison_year\", Int64.Type}, {\"is_complete\", type logical}, {\"baseline_skill_ads\", Int64.Type}, {\"baseline_total_ads\", Int64.Type}, {\"comparison_skill_ads\", Int64.Type}, {\"comparison_total_ads\", Int64.Type}, {\"share_change_pp\", type number}}, \"en-US\")",
+                "in",
+                "    Typed"
+              ]
+            }
+          }
+        ],
+        "measures": [
+          {
+            "name": "Share change pp",
+            "expression": "VAR BaseTotal = SUM(Comparison[baseline_total_ads]) VAR NewTotal = SUM(Comparison[comparison_total_ads]) VAR BaseAds = SUM(Comparison[baseline_skill_ads]) VAR NewAds = SUM(Comparison[comparison_skill_ads]) RETURN IF(HASONEVALUE(Comparison[skill]) && BaseTotal >= 20 && NewTotal >= 20 && MAX(BaseAds,NewAds) >= 5, 100 * (DIVIDE(NewAds,NewTotal) - DIVIDE(BaseAds,BaseTotal)))",
+            "formatString": "+0.0;-0.0;0.0"
+          }
+        ]
+      },
+      {
+        "name": "Roles",
+        "columns": [
+          {
+            "name": "role_family",
+            "dataType": "string",
+            "sourceColumn": "role_family",
+            "summarizeBy": "none"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Roles",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = Csv.Document(File.Contents(DataFolder & \"/Roles.csv\"), [Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),",
+                "    Headers = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),",
+                "    Nulls = Table.ReplaceValue(Headers, \"\", null, Replacer.ReplaceValue, Table.ColumnNames(Headers)),",
+                "    Typed = Table.TransformColumnTypes(Nulls, {{\"role_family\", type text}}, \"en-US\")",
+                "in",
+                "    Typed"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "Months",
+        "columns": [
+          {
+            "name": "publication_month",
+            "dataType": "dateTime",
+            "sourceColumn": "publication_month",
+            "summarizeBy": "none",
+            "formatString": "yyyy-MM"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Months",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = Csv.Document(File.Contents(DataFolder & \"/Months.csv\"), [Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),",
+                "    Headers = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),",
+                "    Nulls = Table.ReplaceValue(Headers, \"\", null, Replacer.ReplaceValue, Table.ColumnNames(Headers)),",
+                "    Typed = Table.TransformColumnTypes(Nulls, {{\"publication_month\", type date}}, \"en-US\")",
+                "in",
+                "    Typed"
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "relationships": [
+      {
+        "name": "35af2e84-a047-5a50-a14a-a73143c6c4c4",
+        "fromTable": "Jobs",
+        "fromColumn": "role_family",
+        "toTable": "Roles",
+        "toColumn": "role_family",
+        "crossFilteringBehavior": "oneDirection"
+      },
+      {
+        "name": "d1f3175f-379c-5052-bb85-90d0a63de9f3",
+        "fromTable": "Skills",
+        "fromColumn": "role_family",
+        "toTable": "Roles",
+        "toColumn": "role_family",
+        "crossFilteringBehavior": "oneDirection"
+      },
+      {
+        "name": "51874814-aa85-5e51-bcaf-6b919c38803a",
+        "fromTable": "Comparison",
+        "fromColumn": "role_family",
+        "toTable": "Roles",
+        "toColumn": "role_family",
+        "crossFilteringBehavior": "oneDirection"
+      },
+      {
+        "name": "4464929b-0da1-5cef-9628-fc4d7582bc54",
+        "fromTable": "Jobs",
+        "fromColumn": "publication_month",
+        "toTable": "Months",
+        "toColumn": "publication_month",
+        "crossFilteringBehavior": "oneDirection"
+      },
+      {
+        "name": "afe1adaa-c87b-5051-9c3d-59472e47026b",
+        "fromTable": "Skills",
+        "fromColumn": "publication_month",
+        "toTable": "Months",
+        "toColumn": "publication_month",
+        "crossFilteringBehavior": "oneDirection"
+      }
+    ]
+  }
+}

@@ -1,0 +1,36 @@
+version: 2
+models:
+  - name: mart_skill_year_comparison
+    description: One row per role and technology comparing complete baseline/comparison years. Annual shares use counts, not averages of monthly percentages.
+  - name: stg_collection_coverage
+    description: Archive completion by publication month; absent/loading periods are incomplete, not zero demand.
+  - name: int_analysis_months
+    description: Complete monthly calendar for the configured analysis_start and analysis_end, inclusive.
+  - name: mart_job_trends_monthly
+    description: One row per month and role, counting distinct source advertisements. Missing coverage yields NULL official totals. Year comparisons need 12 preceding calendar months.
+  - name: mart_skill_trends_monthly
+    description: One row per month, role and technology. Counts, distinct known employers, shares, calendar-aligned growth and weighted three-month shares. total_ads is repeated per skill and must not be summed across skills.
+    columns:
+      - name: publication_month
+        data_tests: [not_null]
+      - name: role_family
+        data_tests: [not_null]
+      - name: skill
+        data_tests: [not_null]
+      - name: is_complete
+        data_tests: [not_null]
+      - name: sufficient_volume
+        description: At least 20 cohort ads and five skill mentions by default; descriptive threshold, not statistical significance.
+seeds:
+  - name: role_classification_patterns
+    description: Conservative analytical title patterns, narrower than the raw candidate seed. The first explicit role in a mixed title wins; taxonomy-only candidates remain Other.
+    columns:
+      - name: role_family
+        data_tests: [unique, not_null]
+  - name: role_patterns
+    description: Ordered role inclusion rules shared by the raw candidate loader and dbt; management exclusions are applied in dbt.
+    columns:
+      - name: role_family
+        data_tests: [unique, not_null]
+      - name: priority
+        data_tests: [unique, not_null]

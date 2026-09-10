@@ -1,0 +1,9 @@
+# Safe to commit: local database settings, no credentials.
+job_market:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: "{{ env_var('JOB_MARKET_DB', 'data/job_market.duckdb') }}"
+      schema: analytics
+      threads: 4

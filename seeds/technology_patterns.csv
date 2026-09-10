@@ -1,0 +1,10 @@
+skill,pattern
+Python,\bpython\b
+SQL,\bsql\b
+Databricks,\bdatabricks\b
+dbt,\bdbt\b
+Snowflake,\bsnowflake\b
+Fabric,\b(microsoft fabric|ms fabric)\b
+Azure,\bazure\b
+AWS,\b(aws|amazon web services)\b
+Power BI,\bpower\s*bi\b
