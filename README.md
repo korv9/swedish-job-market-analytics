@@ -19,6 +19,22 @@ The first run downloads approximately 1.7 GB into `data/history_archives/`. Subs
 
 Open `powerbi/JobMarket.pbip` in Power BI Desktop and refresh. For an immediately viewable rendering of the same aggregates, open `reports/generated/trends.html`. See [Power BI instructions](powerbi/README.md), [role inclusion rules](docs/role-scope.md), and [quality review](docs/quality-review.md).
 
+### Presentation-ready exports
+
+For presenting the results without Power BI or DuckDB, generate clean, flat tables and a formatted Excel workbook:
+
+```powershell
+python scripts/export_presentation.py
+```
+
+This writes `data/presentation/`: tidy, English-labelled CSVs (plain UTF-8, no BOM, ready to publish on a website) for the headline KPIs, ad counts by year and month, a junior/senior/unspecified seniority breakdown (per role and per month), top technologies, the technology stack shift by year, top employers and regional distribution, plus two full-measure exports (`11_job_trends_monthly_full`, `12_skill_trends_monthly_full`) and `JobMarket_presentation.xlsx` with one sheet per table. `reports/generated/presentation.html` is a self-contained English dashboard of the same figures. Unlike the wide `data/powerbi/` star-schema CSVs (which carry technical and NULL columns for the model), these tables are meant to be read and presented directly.
+
+The analysed cohort spans **2022–2025** and four role families: **Software Developer** (system-/mjukvaruutvecklare, programmerare, back/front/fullstack — by far the largest, ~32k ads) plus the three data specialities **Data Engineer, Analytics Engineer, Data Scientist** (~3.7k ads). Volume, seniority, employer and region tables cover all four; the technology tables stay on the data roles because the nine tracked skills are data-oriented. Role patterns live in `seeds/role_patterns.csv` (ingestion retention) and `seeds/role_classification_patterns.csv` (dbt classification); changing them or the year range requires re-running the historical pipeline without `--skip-import`.
+
+The default year range is 2022–2025, controlled by `run_history_pipeline.py --years` (which passes `analysis_start`/`analysis_end` and the skill-comparison `baseline_year`/`comparison_year` vars to dbt). Presentation CSVs are plain UTF-8 (no BOM), ready to publish on a website; the `.xlsx` mirrors them for spreadsheet use. `11_job_trends_monthly_full.csv` and `12_skill_trends_monthly_full.csv` carry every monthly measure the marts compute (MoM/YoY changes, 3-month averages, skill shares). A headline finding: junior software-developer ads fell from 651 (2022) to 187 (2025), −71%, versus −53% for developer ads overall.
+
+`seeds/technology_patterns.csv` tracks **32 technologies** covering both the data stack (Python, SQL, Azure, AWS, Databricks, dbt, Snowflake, Power BI, Fabric) and the general developer stack (Java, JavaScript, TypeScript, C#, .NET, C++, Go, Rust, PHP, Kotlin, Scala, Ruby, React, Angular, Vue, Node.js, Spring, Docker, Kubernetes, Git, Linux, Kafka, Terraform). Detection runs against the title, description and structured skills, so adding patterns re-detects against existing raw data with a `dbt build` (no re-ingest). The technology tables (`06_top_technologies`, `07_tech_stack_by_year`) split by cohort — Software Developer vs the data roles — because the two stacks differ sharply (Java/.NET/C#/JavaScript for developers; Python/SQL/cloud for data roles).
+
 The report shows monthly new-ad counts, technology mention shares and their 2025-versus-2024 change. The role filter distinguishes Data Engineer, Analytics Engineer and Data Scientist. Historical ingestion is separate from live ingestion because the source identifiers and payload formats differ.
 
 ## Offline fixture

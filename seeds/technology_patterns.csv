@@ -8,3 +8,26 @@ Fabric,\b(microsoft fabric|ms fabric)\b
 Azure,\bazure\b
 AWS,\b(aws|amazon web services)\b
 Power BI,\bpower\s*bi\b
+Java,\bjava\b
+JavaScript,\bjavascript\b
+TypeScript,\btypescript\b
+C#,c#|\bc-sharp\b
+.NET,\.net\b|\bdotnet\b
+C++,c\+\+
+Go,\bgolang\b
+Rust,\brust\b
+PHP,\bphp\b
+Kotlin,\bkotlin\b
+Scala,\bscala\b
+Ruby,\bruby\b
+React,\breact\b
+Angular,\bangular\b
+Vue,\bvue\b
+Node.js,\bnode\.?js\b|\bnodejs\b
+Spring,\bspring boot\b|\bspring framework\b|\bspring\b
+Docker,\bdocker\b
+Kubernetes,\bkubernetes\b|\bk8s\b
+Git,\bgit\b
+Linux,\blinux\b
+Kafka,\bkafka\b
+Terraform,\bterraform\b

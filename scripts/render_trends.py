@@ -53,7 +53,7 @@ def plot_report(jobs, skills, comparison, name, destination):
             rs=[r for r in skills if r['skill']==tech and r['publication_month']==month]
             denom=sum(int(r['total_ads']) for r in rs)
             values.append(sum(int(r['ads_with_skill']) for r in rs)/denom if denom else float('nan'))
-        ax.plot([datetime.fromisoformat(m) for m in months],values,label=tech,color=colors[i],linewidth=1.6)
+        ax.plot([datetime.fromisoformat(m) for m in months],values,label=tech,color=colors[i % len(colors)],linewidth=1.6)
     ax.set_title('Share mentioning each technology',loc='left',pad=15,weight='bold')
     ax.yaxis.set_major_formatter(PercentFormatter(1)); ax.set_ylim(bottom=0); ax.grid(axis='y',alpha=.15)
     ax.xaxis.set_major_locator(mdates.MonthLocator(interval=4)); ax.xaxis.set_major_formatter(mdates.DateFormatter('%b %Y'))

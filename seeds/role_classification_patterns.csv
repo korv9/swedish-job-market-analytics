@@ -2,3 +2,4 @@ priority,role_family,title_pattern
 1,Analytics Engineer,\banalytics[ -]+engineers?\b
 2,Data Scientist,\b(data[ -]+scientists?|datavetare)\b
 3,Data Engineer,\b(data[ -]+engineers?|dataingenj[oö]r(er)?)\b
+4,Software Developer,\b(software[ -]+(developer|engineer)s?|system[ -]?utvecklare|mjukvaru[ -]?(utvecklare|ingenj[oö]r(er)?)|programmerare|full[ -]?stack|back[ -]?end[ -]?utvecklare|front[ -]?end[ -]?utvecklare|applikationsutvecklare|webb[ -]?utvecklare)\b
